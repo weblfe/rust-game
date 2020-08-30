@@ -18,19 +18,29 @@ fn game() {
     let rand_number = rand::thread_rng().gen_range(1, 1000);
 
     loop {
+        str.clear();
         count = count + 1;
         println!("请输入你猜想的数字: ");
-        io::stdin().read_line(&mut str).expect("读取输入数据失败!");
+        match io::stdin().read_line(&mut str) {
+            Ok(n) =>n,
+            Err(err) => {
+                println!("输入有误, {}", err);
+                continue;
+            }
+        };
 
         let num: u32 = match str.trim().parse() {
-            Ok(n) => n,
+            Ok(n) => {
+                println!("你输入的数字是: {}",n);
+                n
+            },
             Err(_) => continue,
         };
 
-        println!("你输入的数字是: {} ", str);
         // switch case
         match num.cmp(&rand_number) {
             Ordering::Equal => {
+                println!();
                 println!("恭喜你,猜对了!");
                 println!("总猜错了 {} 次", count - 1);
                 break;
@@ -38,6 +48,5 @@ fn game() {
             Ordering::Less => println!("猜错了,太小了~"),
             Ordering::Greater => println!("猜错了,太大了!!"),
         }
-        str.clear();
     }
 }
